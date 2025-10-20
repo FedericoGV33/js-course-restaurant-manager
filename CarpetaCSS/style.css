@@ -1,0 +1,381 @@
+/* Reset básico: aseguro box-sizing consistente en todo */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Que html/body ocupen alto completo (útil para fondos/centrados) */
+html,
+body {
+  height: 100%;
+}
+
+/* Tipografía, colores base y fondo general de la app */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+/* Variables de tema (colores reutilizables) */
+:root {
+  --accent: #2563eb; /* color principal (acciones primarias) */
+  --accent-600: #1d4ed8; /* hover del principal */
+  --danger: #dc2626; /* acciones destructivas */
+  --ok: #16a34a; /* estados OK */
+  --card-bg: #ffffff; /* fondo de cards */
+  --muted: #64748b; /* texto secundario */
+  --ring: #93c5fd; /* focus ring accesible */
+  --border: #e2e8f0; /* bordes suaves */
+}
+
+/* Espaciado general de layout */
+header,
+main,
+section {
+  padding: 1rem;
+}
+main {
+  max-width: 1100px; /* ancho legible en desktop */
+  margin: 0 auto; /* centrado */
+}
+
+/* Títulos simples y compactos */
+h1 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+}
+h2 {
+  font-size: 1.25rem;
+  margin: 1.25rem 0 0.75rem;
+}
+
+/* Fieldset con borde y fondo para separar formularios del resto */
+form fieldset {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: #fff;
+}
+
+/* Labels en forma de grilla para alinear texto + input */
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+/* Inputs y selects: estilos base, padding y bordes redondeados */
+input[type="text"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: #fff;
+  outline: none;
+}
+
+/* Estado de focus accesible (borde + ring) */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Barra de herramientas de productos: buscador + botón de filtro */
+#product-tools {
+  margin: 0.75rem 0 1rem;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr auto; /* input crece, botón se ajusta */
+}
+
+/* Mensajes cortos de error/estado de formularios */
+.form-msg {
+  margin-top: 0.5rem;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+/* Botones base: cursor, padding, border y pequeñas transiciones */
+button {
+  cursor: pointer;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  transition: transform 0.02s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover/active suaves para feedback */
+button:hover {
+  background: #f1f5f9;
+}
+button:active {
+  transform: translateY(1px);
+}
+
+/* Botones principales (agregar producto/receta) */
+#btn-add-product,
+#btn-add-recipe {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+#btn-add-product:hover,
+#btn-add-recipe:hover {
+  background: var(--accent-600);
+  border-color: var(--accent-600);
+}
+
+/* Grupo de acciones dentro de cada card */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* si no entra en una línea, que salte */
+}
+
+/* Botón destructivo (eliminar) */
+.btn-delete {
+  color: #fff;
+  background: var(--danger);
+  border-color: var(--danger);
+}
+.btn-delete:hover {
+  filter: brightness(0.95);
+}
+
+/* Grillas para listas (products/recipes). Mobile-first: 1 columna */
+#product-list,
+#recipe-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+/* 2 columnas a partir de 600px */
+@media (min-width: 600px) {
+  #product-list,
+  #recipe-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* 3 columnas a partir de 900px */
+@media (min-width: 900px) {
+  #product-list,
+  #recipe-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Card base (producto y receta): borde, sombra sutil y spacing */
+.product-card,
+.recipe-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.9rem;
+  box-shadow: 0 1px 2px rgba(2, 6, 23, 0.05);
+  display: grid;
+  gap: 0.5rem;
+}
+
+/* Header de la card: nombre a la izquierda y (si aparece) id a la derecha */
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.p-id,
+.r-id {
+  color: var(--muted);
+}
+
+/* Metadatos de producto (stock, unidad, mínimo) */
+.p-meta {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+.p-meta .p-unit,
+.p-meta .p-min {
+  color: var(--muted);
+}
+
+/* Bandera visual de “reposición necesaria” */
+.reorder-flag {
+  color: var(--danger);
+}
+
+/* Mini formulario inline para actualizar stock rápido */
+.inline-update {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+/* Lista de ingredientes dentro de recetas (estilo limpio y compacto) */
+.r-ingredients {
+  margin: 0.2rem 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+  list-style: disc;
+}
+
+/* Focus visible accesible para elementos focusables */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+  border-radius: 0.5rem;
+}
+
+/* Separador sutil entre secciones */
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+/* Texto auxiliar más apagado */
+small {
+  color: var(--muted);
+}
+/* ===== UX: estados visuales según stock ===== */
+.product-card.low-stock {
+  border: 1px solid #dc2626; /* rojo alerta */
+  background: #fee2e2;
+}
+.product-card.ok-stock {
+  border: 1px solid #16a34a; /* verde ok */
+  background: #f0fdf4;
+}
+
+/* Mensaje cuando no hay resultados */
+.empty-message {
+  color: var(--muted);
+  background: #fff;
+  border: 1px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  text-align: center;
+}
+
+/* Hover / elevación suave en cards */
+.product-card:hover,
+.recipe-card:hover {
+  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.12);
+  transform: translateY(-2px);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* Botón "Show all products" como acción secundaria */
+#btn-show-all {
+  border-color: var(--accent);
+}
+#btn-show-all:hover {
+  background: #eff6ff;
+}
+:root {
+  --header-h: 72px; /* altura del header */
+}
+
+/* Header fijo con branding */
+.site-header {
+  position: fixed; /* SIEMPRE visible */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  z-index: 9999; /* por encima de las cards */
+  background: #f8fafc; /* mismo fondo del body */
+  backdrop-filter: saturate(1.1) blur(3px); /* efecto sutil */
+  border-bottom: 1px solid var(--border); /* línea divisoria */
+  padding: 0.6rem 1rem;
+  display: grid;
+  place-items: center;
+  gap: 0.2rem;
+}
+
+/* deja espacio para que el contenido no quede debajo del header */
+body {
+  padding-top: var(--header-h);
+}
+
+/* Marca grande centrada (tipografía base sin gradiente) */
+.site-header .brand {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem; /* espacio entre emoji y texto */
+}
+
+/* Solo el texto tiene gradiente animado */
+.site-header .brand-text {
+  background: linear-gradient(90deg, #2563eb, #16a34a, #f59e0b, #2563eb);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* muestra solo el gradiente */
+  animation: brandShift 8s linear infinite;
+}
+
+/* Hover suave solo en el texto, no en el emoji */
+.site-header .brand-text:hover {
+  letter-spacing: 0.08em;
+  transition: letter-spacing 0.25s ease;
+}
+
+/* El emoji queda con sus colores nativos (sin gradiente) */
+.site-header .logo {
+  display: inline-block;
+  line-height: 1;
+  /* aseguramos que no herede nada del gradiente */
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: inherit; /* usa color del entorno si hiciera falta */
+  -webkit-text-fill-color: currentColor;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.12)); /* toque sutil */
+}
+
+/* Keyframes del gradiente (animación sutil) */
+@keyframes brandShift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+/* SweetAlert2: toasts por debajo del header fijo y siempre visibles */
+/* Empuja los toasts "top-*" para que arranquen bajo el header */
+.swal2-container.swal2-top,
+.swal2-container.swal2-top-start,
+.swal2-container.swal2-top-end,
+.swal2-container.swal2-top-left,
+.swal2-container.swal2-top-right {
+  top: calc(var(--header-h) + 8px) !important;
+}
+
+/* Asegura que los toasts/modales queden por encima del contenido */
+.swal2-container {
+  z-index: 10050 !important;
+}

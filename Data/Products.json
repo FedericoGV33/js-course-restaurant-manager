@@ -1,0 +1,23 @@
+[
+  {
+    "id": "flour-001",
+    "name": "Flour",
+    "unit": "kg",
+    "stock": 12,
+    "minStock": 5
+  },
+  {
+    "id": "oil-001",
+    "name": "Sunflower Oil",
+    "unit": "lt",
+    "stock": 3,
+    "minStock": 6
+  },
+  {
+    "id": "tomato-001",
+    "name": "Tomato",
+    "unit": "kg",
+    "stock": 8,
+    "minStock": 4
+  }
+]

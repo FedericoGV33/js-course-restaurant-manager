@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon (SVG con emoji 🥗 vía data-URL) -->
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="90">🥗</text></svg>'
+    />
+    <title>Restaurant Manager</title>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS principal de la app (estilos base y layout) -->
+    <link rel="stylesheet" href="./CarpetaCSS/style.css" />
+    <!-- Cargo el JS con "defer" para que se ejecute cuando el HTML ya está listo.
+         Así no necesito usar DOMContentLoaded en el script. -->
+    <!-- primero: estado/lógica -->
+    <script src="./CarpetaJS/store.js" defer></script>
+    <!-- después: UI -->
+    <script src="./CarpetaJS/main.js" defer></script>
+  </head>
+  <body>
+    <!-- Encabezado simple con título y mini estado del proyecto -->
+    <!-- Encabezado sticky con marca centrada -->
+    <header class="site-header" role="banner">
+      <h1 class="brand" aria-label="App brand">
+        <span class="logo" aria-hidden="true">🥗</span>
+        <span class="brand-text">FOOD CLUB</span>
+      </h1>
+    </header>
+
+    <main>
+      <!-- Sección de Productos: alta/listado/acciones -->
+      <section id="products" aria-labelledby="products-title">
+        <h2 id="products-title">Products</h2>
+
+        <!-- Form para crear un producto. Guardo nombre, unidad, stock y stock mínimo.
+             Lo manejo todo desde JS y localStorage (no hay backend). -->
+        <form id="product-form" autocomplete="off">
+          <fieldset>
+            <legend>Add product</legend>
+            <label>
+              Name
+              <input
+                id="p-name"
+                name="name"
+                type="text"
+                minlength="2"
+                required
+              />
+            </label>
+            <label>
+              Unit (e.g. kg, lt, pcs)
+              <input id="p-unit" name="unit" type="text" required />
+            </label>
+            <label>
+              Stock
+              <input
+                id="p-stock"
+                name="stock"
+                type="number"
+                min="0"
+                step="1"
+                required
+              />
+            </label>
+            <label>
+              Min stock
+              <input
+                id="p-min"
+                name="minStock"
+                type="number"
+                min="0"
+                step="1"
+                required
+              />
+            </label>
+            <!-- Botón principal para agregar el producto -->
+            <button type="submit" id="btn-add-product">Add</button>
+            <!-- Botón utilitario: resetea el storage y vuelve a los productos por defecto -->
+            <button type="button" id="btn-clear-products">
+              Clear all (storage)
+            </button>
+          </fieldset>
+        </form>
+
+        <!-- Herramientas rápidas para trabajar con el listado:
+             - buscador por nombre
+             - filtro para mostrar solo los que hay que reponer -->
+        <div id="product-tools">
+          <input
+            id="p-search"
+            type="search"
+            placeholder="Search product by name..."
+          />
+          <!-- Botón para resetear filtros y volver a ver todos los productos -->
+          <button type="button" id="btn-show-all">Show all products</button>
+          <button type="button" id="btn-show-reorder">
+            Show items to reorder
+          </button>
+        </div>
+
+        <!-- Contenedor donde JS dibuja las cards de productos -->
+        <div id="product-list" aria-live="polite"></div>
+      </section>
+
+      <hr />
+
+      <!-- Sección de Recetas: alta/listado/acciones -->
+      <section id="recipes" aria-labelledby="recipes-title">
+        <h2 id="recipes-title">Recipes</h2>
+
+        <!-- Form para crear una receta.
+             Permite escribir pasos (opcional) y armar una lista de ingredientes con cantidades. -->
+        <form id="recipe-form" autocomplete="off">
+          <fieldset>
+            <legend>Add recipe</legend>
+            <label>
+              Name
+              <input
+                id="r-name"
+                name="name"
+                type="text"
+                minlength="2"
+                required
+              />
+            </label>
+            <label>
+              Steps (optional)
+              <textarea
+                id="r-steps"
+                name="steps"
+                rows="3"
+                placeholder="Procedure..."
+              ></textarea>
+              <!-- Constructor de ingredientes: el select se llena con los productos existentes -->
+              <div id="ingredient-builder">
+                <label>
+                  Ingredient
+                  <select id="r-prod"></select>
+                </label>
+                <label>
+                  Qty
+                  <input id="r-qty" type="number" min="0.1" step="0.1" />
+                </label>
+                <button type="button" id="btn-add-ingredient">
+                  Add ingredient
+                </button>
+              </div>
+
+              <!-- Lista temporal (preview) de ingredientes antes de crear la receta -->
+              <ul id="ingredient-list"></ul>
+            </label>
+            <!-- Crea la receta usando lo que hay en el formulario + la lista temporal -->
+            <button type="submit" id="btn-add-recipe">Add recipe</button>
+          </fieldset>
+        </form>
+
+        <!-- Contenedor donde JS dibuja las cards de recetas -->
+        <div id="recipe-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <!-- TEMPLATES: estructuras invisibles para clonar desde JS sin meter HTML como strings.
+         Esto hace el render más limpio y fácil de mantener. -->
+    <template id="product-card-template">
+      <article class="product-card">
+        <header class="card-header">
+          <h3 class="p-name"></h3>
+          <!-- id interno (oculto), útil para debug o referencias -->
+          <small class="p-id" hidden></small>
+        </header>
+        <p class="p-meta">
+          <span class="p-stock"></span>
+          <span class="p-unit"></span>
+          <span class="p-min"></span>
+        </p>
+        <div class="card-actions">
+          <!-- Abre un mini form inline para actualizar el stock -->
+          <button class="btn-update" type="button">Update stock</button>
+          <!-- Elimina el producto -->
+          <button class="btn-delete" type="button">Delete</button>
+        </div>
+        <!-- Mini form inline para actualizar stock rápido sin salir de la card -->
+        <form class="inline-update" hidden>
+          <input
+            class="u-new-stock"
+            name="newStock"
+            type="number"
+            min="0"
+            step="1"
+            aria-label="New stock"
+          />
+          <button class="u-save" type="submit">Save</button>
+          <button class="u-cancel" type="button">Cancel</button>
+        </form>
+        <footer class="card-footer">
+          <!-- Flag visual cuando el stock está en o por debajo del mínimo -->
+          <strong class="reorder-flag" hidden>⚠ Needs reorder</strong>
+        </footer>
+      </article>
+    </template>
+
+    <template id="recipe-card-template">
+      <article class="recipe-card">
+        <header class="card-header">
+          <h3 class="r-name"></h3>
+          <!-- id de la receta (oculto), por si necesito referenciar o borrar -->
+          <small class="r-id" hidden></small>
+        </header>
+        <!-- Pasos de la receta (puede estar vacío) -->
+        <p class="r-steps"></p>
+        <!-- Lista de ingredientes ya confirmados (con unidad tomada del producto) -->
+        <ul class="r-ingredients"></ul>
+        <div class="card-actions">
+          <button class="btn-cook-recipe" type="button">Cook / Use</button>
+          <!-- Elimina la receta -->
+          <button class="btn-delete-recipe" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+  </body>
+</html>
