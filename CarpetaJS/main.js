@@ -8,6 +8,13 @@ importantes ya que no cuento con login y contraseña (ni creo que vaya a agregar
 en caso de que algo de esto sea importante y no me di cuenta, por favor dejarme una nota 
 en la devolucion, gracias!*/
 
+/*NOTA-entrega final----Agregue comentarios descriptivos a muchas cosas ya que fue una de las cosas 
+que me pidieron agregar, agregue las funcionalidades requeridas y tambien le di mas estilos con css
+ademas de alerts, corri muchas pruebas en todos los botones/funciones y creo que todo funciona como
+deberia, al menos no encontre ningun bug en todo lo que probe, tambien agregue un readme explicando
+que hace cada funcion y que se podria agregar tambien, cualquier cosa que no funcione por favor 
+dejarlo en la devolucion, gracias! */
+
 // Boot de la app
 // Carga estado, conecta eventos y hace el primer render de UI
 async function initApp() {
